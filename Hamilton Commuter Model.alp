@@ -703,7 +703,7 @@ list_ticket_cost[i]=Math.round(Math.random()+11);
 				<Variable Class="PlainVariable">
 					<Id>1678651667572</Id>
 					<Name><![CDATA[bus_att_by_agent]]></Name>
-					<X>40</X><Y>340</Y>
+					<X>40</X><Y>360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -729,7 +729,7 @@ bus_att_by_agent[i]=rand;
 				<Variable Class="PlainVariable">
 					<Id>1678651671412</Id>
 					<Name><![CDATA[car_att_by_agent]]></Name>
-					<X>40</X><Y>360</Y>
+					<X>40</X><Y>380</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -756,7 +756,7 @@ car_att_by_agent[i] = rand;
 					<Id>1678651833032</Id>
 					<Name><![CDATA[choice_by_agent]]></Name>
 					<Description><![CDATA[initialized at 0 since this is pop fraction that are car supporters at start of sim]]></Description>
-					<X>40</X><Y>380</Y>
+					<X>40</X><Y>400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -776,7 +776,7 @@ choice_by_agent[i]=0;
 				<Variable Class="PlainVariable">
 					<Id>1678655209456</Id>
 					<Name><![CDATA[bus_count_by_agent]]></Name>
-					<X>40</X><Y>400</Y>
+					<X>40</X><Y>420</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -798,7 +798,7 @@ bus_count_by_agent[i]=0;
 					<Id>1678967694978</Id>
 					<Name><![CDATA[prev_choice_by_agent]]></Name>
 					<Description><![CDATA[initialized at 0 since this is pop fraction that are car supporters at start of sim]]></Description>
-					<X>40</X><Y>420</Y>
+					<X>40</X><Y>440</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -812,6 +812,32 @@ for(int i=0;i<100;i++ )
 {
 prev_choice_by_agent[i]=0;
 }]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1678992021770</Id>
+					<Name><![CDATA[satisfaction_rate]]></Name>
+					<X>40</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double []]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[100];
+
+for(int i=0;i<100;i++ )
+{
+Random r = new Random();
+double low = -0.15;
+double high = 0.15;
+double rand = low + (high-low)*r.nextDouble();
+//bus_att_by_agent[i]=Math.random();
+satisfaction_rate[i]=rand;
+}
+]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -1079,7 +1105,7 @@ prev_choice_by_agent[i]=0;
 				<Variable Class="Parameter">
 					<Id>1678376178101</Id>
 					<Name><![CDATA[non_adopt_count]]></Name>
-					<X>40</X><Y>500</Y>
+					<X>40</X><Y>520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1200,7 +1226,7 @@ prev_choice_by_agent[i]=0;
 					<Id>1678388303366</Id>
 					<Name><![CDATA[adopt_frac]]></Name>
 					<Description><![CDATA[0.256 is from statcan]]></Description>
-					<X>40</X><Y>460</Y>
+					<X>40</X><Y>480</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1224,7 +1250,7 @@ prev_choice_by_agent[i]=0;
 				<Variable Class="Parameter">
 					<Id>1678388387732</Id>
 					<Name><![CDATA[adopt_rate]]></Name>
-					<X>40</X><Y>480</Y>
+					<X>40</X><Y>500</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1248,7 +1274,7 @@ prev_choice_by_agent[i]=0;
 				<Variable Class="Parameter">
 					<Id>1678388805128</Id>
 					<Name><![CDATA[pop_effect]]></Name>
-					<X>40</X><Y>440</Y>
+					<X>40</X><Y>460</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1297,7 +1323,7 @@ prev_choice_by_agent[i]=0;
 				<Variable Class="Parameter">
 					<Id>1678973279639</Id>
 					<Name><![CDATA[j]]></Name>
-					<X>40</X><Y>520</Y>
+					<X>40</X><Y>540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1371,7 +1397,7 @@ main.low_inc_agents.get(i).shapeBody.setFillColor(silver);
 double p = 0;//reset to 0 for each iteration since it is a new agent
 //0.5 for initial attitudes
 //weights vary for income bracket
-p=cost_weight*(ticket_cost-drive_cost)+time_weight*(bus_time-car_time)+satisfaction_weight*(bus_att_by_agent[i]-car_att_by_agent[i])-6.9+prev_choice_by_agent[i];
+p=cost_weight*(ticket_cost-drive_cost)+time_weight*(bus_time-car_time)+satisfaction_rate[i]*(bus_att_by_agent[i]-car_att_by_agent[i])+prev_choice_by_agent[i]-6.9+prev_choice_by_agent[i];
 //System.out.println(i);
 System.out.println("Previous choice of agent i: "+prev_choice_by_agent[i]);//looks like agents making multiple choices at one time?
 	if(p>0)
