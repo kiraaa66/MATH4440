@@ -705,17 +705,6 @@ satisfaction_rate[i]=rand;
 					</Properties>                 
 				</Variable>
 			</Variables>
-			<DynamicEvents>
-				<DynamicEventClass>
-					<Id>1680236380334</Id>
-					<Name><![CDATA[MyDynamicEvent]]></Name>
-					<X>460</X><Y>160</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-				</DynamicEventClass>
-			</DynamicEvents>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1678207546540</Id>
@@ -897,7 +886,7 @@ satisfaction_rate[i]=rand;
 						<Parameter>
 							<Name><![CDATA[cost_weight]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[0.27]]></Code>
+								<Code><![CDATA[0.366]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -915,7 +904,7 @@ satisfaction_rate[i]=rand;
 						<Parameter>
 							<Name><![CDATA[satisfaction_weight]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[0.33]]></Code>
+								<Code><![CDATA[0.258]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -926,6 +915,9 @@ satisfaction_rate[i]=rand;
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[time_weight]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[0.376]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[pub_att_calc]]></Name>
@@ -2469,12 +2461,14 @@ for (int i = 0; i < 100; i++)
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double []]]></Type>        
+						<Type><![CDATA[double [][]]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double [10];
+							<Code><![CDATA[new double [100][10];
 
-for (int i = 0; i < 10; i++){
-	prev_days[i] = 0;
+for (int i = 0; i < 100; i++){
+	for (int j = 0; j < 10; j++){
+		prev_days[i][j] = 0;
+	}
 }]]></Code>
 						</InitialValue>
 					</Properties>
@@ -2966,7 +2960,7 @@ for(int i=0;i<100;i++)
 		for (int j = 0; j < k+1; j++){
 			temp = temp * delta[i];
 		}
-		memory += prev_days[k]*temp;
+		memory += prev_days[i][k]*temp;
 	}
 //main.low_inc_agents.get(i).shapeBody.setFillColor(silver);
 	p = 0;
@@ -3001,13 +2995,13 @@ for(int i=0;i<100;i++)
 		//choice_by_agent[i]=0;
 		main.low_inc_agents.get(i).shapeBody.setFillColor(silver);
 		}
-    
+    //System.out.println(p);
 //main.low_inc_agents.get(i).shapeBody.setFillColor(yellow);
 //System.out.println("Car count: "+car_counter);
 	for (int k = 9; k > 0; k--){
-  		prev_days[k] = prev_days[k-1]; // will set the later day to the earlier one
+  		prev_days[i][k] = prev_days[i][k-1]; // will set the later day to the earlier one
 	}
-	prev_days[0] = p;
+	prev_days[i][0] = p;
 	
 }//end of for loop
 main.num_commute_low = bus_counter;
@@ -3074,6 +3068,14 @@ if(bus_count_by_agent[i]>=30)
 for(int i=0;i<adopt_frac;i++ )
 {
 main.low_inc_agents.get(i).shapeBody.setFillColor(cyan);
+}
+
+for (int i = 0; i < 100; i++){
+	for (int k = 0; k < 10; k++){
+		prev_days[i][k] = (double)(Math.random()*10-5);
+		//prev_days[i][k] = prev_days[i][0]/100;
+	//System.out.println(prev_days[i][0]);
+	}
 }
 ]]></EntryAction>
 						<FillColor>-16711681</FillColor>
@@ -3292,19 +3294,205 @@ main.low_inc_agents.get(i).shapeBody.setFillColor(cyan);
 					<Action><![CDATA[int i=0;
 while(i<100)
 {
-if(bus_count_by_agent[i]>=30)//adopted bus
+	if(bus_count_by_agent[i]>=30)//adopted bus
 	{
-	main.low_inc_agents.get(i).shapeBody.setFillColor(cyan);
-	adopt_frac=adopt_frac+1;	 
+		main.low_inc_agents.get(i).shapeBody.setFillColor(cyan);
+		adopt_frac=adopt_frac+1;	 
 	}
-else if(bus_count_by_agent[i]<30)//did not adopt bus
+	else if(bus_count_by_agent[i]<30)//did not adopt bus
 	{
-	main.low_inc_agents.get(i).shapeBody.setFillColor(yellow);
-	adopt_frac=adopt_frac;	 
+		main.low_inc_agents.get(i).shapeBody.setFillColor(yellow);
+		adopt_frac=adopt_frac;	 
 	}
-i=i+1;
+	i=i+1;
 }
 adopt_rate=adopt_frac/100.0;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293438884</Id>
+					<Name><![CDATA[busTraffic]]></Name>
+					<X>629</X><Y>135</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[7]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293438905</Id>
+					<Name><![CDATA[busReset]]></Name>
+					<X>664</X><Y>162</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[8]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293611022</Id>
+					<Name><![CDATA[carTraffic]]></Name>
+					<X>623</X><Y>272</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293611047</Id>
+					<Name><![CDATA[carReset]]></Name>
+					<X>658</X><Y>299</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[6]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295167463</Id>
+					<Name><![CDATA[runningLate]]></Name>
+					<X>554</X><Y>1</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[3]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight += 0.1;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295167489</Id>
+					<Name><![CDATA[lateReset]]></Name>
+					<X>589</X><Y>28</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[4]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight -= 0.1;]]></Action>
 				</Event>
 			</Events>
 			<Functions>
@@ -3839,12 +4027,14 @@ for (int i = 0; i < 100; i++)
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double []]]></Type>        
+						<Type><![CDATA[double [][]]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double [10];
+							<Code><![CDATA[new double [100][10];
 
-for (int i = 0; i < 10; i++){
-	prev_days[i] = 0;
+for (int i = 0; i < 100; i++){
+	for (int j = 0; j < 10; j++){
+		prev_days[i][j] = 0;
+	}
 }]]></Code>
 						</InitialValue>
 					</Properties>
@@ -3950,8 +4140,9 @@ for (int i = 0; i < 10; i++){
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1680201966453</Id>
+							<Label><![CDATA[cost_weight]]></Label>
 							<EditorContolType>SLIDER</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
@@ -4070,8 +4261,8 @@ for (int i = 0; i < 10; i++){
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1680201966480</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<EditorContolType>SLIDER</EditorContolType>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
@@ -4142,9 +4333,10 @@ for (int i = 0; i < 10; i++){
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1680201966497</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<Label><![CDATA[time_weight]]></Label>
+							<EditorContolType>SLIDER</EditorContolType>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
@@ -4330,7 +4522,7 @@ double p = 0;
 //System.out.println("Entering loop now");	
 for(int i=0;i<100;i++)
 {
-	System.out.println(delta[i]);
+	//System.out.println(delta[i]);
 	memory = 0;
 	for (int k = 0; k < 10; k++){
 		temp = delta[i];
@@ -4338,7 +4530,7 @@ for(int i=0;i<100;i++)
 		for (int j = 0; j < k+1; j++){
 			temp = temp * delta[i];
 		}
-		memory += prev_days[k]*temp;
+		memory += prev_days[i][k]*temp;
 	}
 //main.low_inc_agents.get(i).shapeBody.setFillColor(silver);
 	p = 0;
@@ -4374,10 +4566,10 @@ for(int i=0;i<100;i++)
 		main.middle_inc_agents.get(i).shapeBody.setFillColor(silver);
 		}
 	for (int k = 9; k > 0; k--){
-  		prev_days[k] = prev_days[k-1];
+  		prev_days[i][k] = prev_days[i][k-1];
   	//	System.out.println(prev_days[k]); // will set the later day to the earlier one
 	}
-	prev_days[0] = p;
+	prev_days[i][0] = p;
 	
 //main.low_inc_agents.get(i).shapeBody.setFillColor(yellow);
 //System.out.println("Car count: "+car_counter);
@@ -4442,7 +4634,14 @@ if(bus_count_by_agent[i]>=30)
 						<EntryAction><![CDATA[adopt_frac=15;
 for(int i=0;i<adopt_frac;i++ )
 {
-main.mid_inc_agents.get(i).shapeBody.setFillColor(cyan);
+main.middle_inc_agents.get(i).shapeBody.setFillColor(cyan);
+}
+
+for (int i = 0; i < 100; i++){
+	for (int k = 0; k < 10; k++){
+		prev_days[i][k] = (double)(Math.random()*10-7.5);
+		//prev_days[i][k] = prev_days[i][0]/100;
+	}
 }
 ]]></EntryAction>
 						<FillColor>-16711681</FillColor>
@@ -4628,6 +4827,194 @@ int daysPassed = (int) (timeInSeconds / java.util.concurrent.TimeUnit.DAYS.toSec
 					</Properties>	
 				</StatechartElement>
 			</StatechartElements>
+			<Events>
+				<Event>
+					<Id>1680293443204</Id>
+					<Name><![CDATA[busTraffic]]></Name>
+					<X>421</X><Y>141</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[7]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293443224</Id>
+					<Name><![CDATA[busReset]]></Name>
+					<X>456</X><Y>168</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[8]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293615152</Id>
+					<Name><![CDATA[carTraffic]]></Name>
+					<X>434</X><Y>222</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293615171</Id>
+					<Name><![CDATA[carReset]]></Name>
+					<X>469</X><Y>249</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[6]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295189046</Id>
+					<Name><![CDATA[runningLate]]></Name>
+					<X>334</X><Y>36</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[3]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight += 0.15;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295189075</Id>
+					<Name><![CDATA[lateReset]]></Name>
+					<X>369</X><Y>63</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[4]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight -= 0.15;]]></Action>
+				</Event>
+			</Events>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -5093,12 +5480,14 @@ for (int i = 0; i < 100; i++)
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double []]]></Type>        
+						<Type><![CDATA[double [][]]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double [10];
+							<Code><![CDATA[new double [100][10];
 
-for (int i = 0; i < 10; i++){
-	prev_days[i] = 0;
+for (int i = 0; i < 100; i++){
+	for (int j = 0; j < 10; j++){
+		prev_days[i][j] = 0;
+	}
 }]]></Code>
 						</InitialValue>
 					</Properties>
@@ -5115,6 +5504,24 @@ for (int i = 0; i < 10; i++){
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1680288604836</Id>
+					<Name><![CDATA[agent_extra]]></Name>
+					<X>200</X><Y>70</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double [100];
+for (int i = 0; i < 100; i++){
+	agent_extra[i] = 0;
+}]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -5205,7 +5612,7 @@ for (int i = 0; i < 10; i++){
 						<ParameterEditor>
 							<Id>1680225136258</Id>
 							<EditorContolType>SLIDER</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
@@ -5324,9 +5731,10 @@ for (int i = 0; i < 10; i++){
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1680225136273</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<Label><![CDATA[satisfaction_weight]]></Label>
+							<EditorContolType>SLIDER</EditorContolType>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
@@ -5396,9 +5804,10 @@ for (int i = 0; i < 10; i++){
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1680225136282</Id>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<Label><![CDATA[time_weight]]></Label>
+							<EditorContolType>SLIDER</EditorContolType>
+							<MinSliderValue><![CDATA[-1]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
@@ -5590,16 +5999,16 @@ for(int i=0;i<100;i++)
 		for (int j = 0; j < k+1; j++){
 			temp = temp * delta[i];
 		}
-		memory += prev_days[k]*temp;
+		memory += prev_days[i][k]*temp;
 	}
 //main.low_inc_agents.get(i).shapeBody.setFillColor(silver);
-p = 0;
+	p = 0;
 //Thread.sleep(5000);//delay for 5 seconds
 //reset to 0 for each iteration since it is a new agent
 //0.5 for initial attitudes
 //weights vary for income bracket
-p=-cost_weight*(ticket_cost-drive_cost)-time_weight*(bus_time-car_time)+satisfaction_rate[i]*(bus_att_by_agent[i]-car_att_by_agent[i])+memory;//-0.2893547219+prev_choice_by_agent[i];
-//System.out.println("Choice of agent "+i+": "+p);
+	p = -cost_weight*(ticket_cost-drive_cost) - time_weight*(bus_time-car_time) + satisfaction_weight*(bus_att_by_agent[i]-car_att_by_agent[i]) + memory + agent_extra[i];//-0.2893547219+prev_choice_by_agent[i];
+	System.out.println("Choice of agent "+i+": "+p);
 //System.out.println(ticket_cost);
 //System.out.println(time_weight);
 //System.out.println(satisfaction_weight);
@@ -5612,6 +6021,8 @@ p=-cost_weight*(ticket_cost-drive_cost)-time_weight*(bus_time-car_time)+satisfac
 		main.high_inc_agents1.get(i).shapeBody.setFillColor(orange);//choice visualized
 		bus_count_by_agent[i]=bus_count_by_agent[i]+1;//for checking for adoption
 		bus_counter = bus_counter+1;
+		bus_att_by_agent[i] += 0.1;
+		car_att_by_agent[i] -= 0.02;
 		}
 	else if(p<0)
 		{
@@ -5619,6 +6030,8 @@ p=-cost_weight*(ticket_cost-drive_cost)-time_weight*(bus_time-car_time)+satisfac
 		main.high_inc_agents1.get(i).shapeBody.setFillColor(pink);
 		bus_count_by_agent[i]=bus_count_by_agent[i]-1;
 		car_counter = car_counter+1;
+		bus_att_by_agent[i] -= 0.02;
+		car_att_by_agent[i] += 0.1;
 		}
 	else if(p==0)
 		{
@@ -5626,9 +6039,9 @@ p=-cost_weight*(ticket_cost-drive_cost)-time_weight*(bus_time-car_time)+satisfac
 		main.high_inc_agents1.get(i).shapeBody.setFillColor(silver);
 		}
 	for (int k = 9; k > 0; k--){
-  		prev_days[k] = prev_days[k-1]; // will set the later day to the earlier one
+  		prev_days[i][k] = prev_days[i][k-1]; // will set the later day to the earlier one
 	}
-	prev_days[0] = p;
+	prev_days[i][0] = p;
 	
 //main.low_inc_agents.get(i).shapeBody.setFillColor(yellow);
 //System.out.println("Car count: "+car_counter);
@@ -5693,7 +6106,14 @@ if(bus_count_by_agent[i]>=30)
 						<EntryAction><![CDATA[adopt_frac=5;
 for(int i=0;i<adopt_frac;i++ )
 {
-main.high_inc_agents.get(i).shapeBody.setFillColor(cyan);
+main.high_inc_agents1.get(i).shapeBody.setFillColor(cyan);
+}
+for (int i = 0; i < 100; i++){
+	for (int k = 0; k < 10; k++){
+		prev_days[i][k] = (double)(Math.random()*10-10);
+	//	System.out.println(prev_days[i][k]);
+		//prev_days[i][k] = prev_days[i][0]/100;
+	}
 }
 ]]></EntryAction>
 						<FillColor>-16711681</FillColor>
@@ -5879,6 +6299,194 @@ int daysPassed = (int) (timeInSeconds / java.util.concurrent.TimeUnit.DAYS.toSec
 					</Properties>	
 				</StatechartElement>
 			</StatechartElements>
+			<Events>
+				<Event>
+					<Id>1680293435003</Id>
+					<Name><![CDATA[busTraffic]]></Name>
+					<X>332</X><Y>167</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[7]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293435029</Id>
+					<Name><![CDATA[busReset]]></Name>
+					<X>367</X><Y>194</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[8]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[bus_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293558652</Id>
+					<Name><![CDATA[carTraffic]]></Name>
+					<X>359</X><Y>266</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time += 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680293558675</Id>
+					<Name><![CDATA[carReset]]></Name>
+					<X>394</X><Y>293</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[6]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[5]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[car_time -= 0.5;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295049108</Id>
+					<Name><![CDATA[runningLate]]></Name>
+					<X>495</X><Y>79</Y>
+					<Label><X>5</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[3]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight += 0.2;]]></Action>
+				</Event>
+				<Event>
+					<Id>1680295049131</Id>
+					<Name><![CDATA[lateReset]]></Name>
+					<X>530</X><Y>106</Y>
+					<Label><X>10</X><Y>-2</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_WEEK]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1680336000000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[4]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[time_weight -= 0.2;]]></Action>
+				</Event>
+			</Events>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
